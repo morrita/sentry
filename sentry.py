@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # name: sentry.py
-# version: 1.0
+# version: 1.1
 # author: Tom Morris
 # date: April 2016
 
@@ -11,13 +11,6 @@ from email.mime.text import MIMEText
 
 import StringIO  # needed for capturing test images
 from PIL import Image
-
-
-# sudo apt-get install libjpeg-dev 
-# sudo apt-get install python3-pip
-# sudo pip-3.2 install pillow
-# sudo apt-get install python-dev
-# sudo apt-get install python-imaging-tk
 
 import imaplib
 import sys
