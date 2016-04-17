@@ -1,0 +1,33 @@
+# name= mailer.ini
+
+[EmailSetup]
+email_server 	:mail.ispnetwork.com
+email_user 	:my_rpi@ispnetwork.com
+email_password 	:my_email_password
+emailSubject 	:response from Raspberry Pi at 
+internet_gw 	:192.168.1.254
+nw_checks 	:%(internet_gw)s,%(email_server)s
+
+[PathSetup]
+logdir 		:/var/log/sentry
+logfile 	:%(logdir)s/sentry.log
+tmpdir 		:/tmp
+tmpfile 	:%(tmpdir)s/sentry_counter.txt
+filepath 	:/tmp
+filenamePrefix  :image 
+
+[CameraSetup]
+photo_width 	:640
+photo_height 	:480
+pct_quality 	:100
+sensitivity	:30
+threshold	:150
+test_width	:100
+test_height	:75
+
+[GeneralSetup]
+use_acl 	:1
+verbose         :0
+loopThreshold 	:60
+max_second	:55
+acl		:fred_bloggs@ispnetwork.com,thelm_flintstone@ispnetwork.com
