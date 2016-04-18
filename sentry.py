@@ -56,7 +56,6 @@ def readConfigFile():
 
     global loopThreshold; loopThreshold = parser.getint('GeneralSetup','loopThreshold') 
     global max_second; max_second = parser.getint('GeneralSetup','max_second') 
-    global max_running_flags; max_running_flags = parser.getint('GeneralSetup','max_running_flags') 
     global use_acl; use_acl = parser.getboolean('GeneralSetup','use_acl') 
     global verbose; verbose= parser.getboolean('GeneralSetup','verbose') 
     global acl; acl = parser.get('GeneralSetup','acl') 
@@ -343,6 +342,8 @@ else:
                       update_file("changedPixels = %s , sensitivity = %s , threshold = %s \n" % (str(changedPixels), str(sensitivity), str(threshold)), logfile)
                       changedPixels = 0
                       break
+
+                  continue
 
               image1 = image2
               buffer1 = buffer2
