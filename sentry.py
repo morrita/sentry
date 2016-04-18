@@ -155,7 +155,7 @@ def sendEmail(emailTo,filename='',first_line=''):
         msg.attach(MIMEText(first_line))
 
     if filename:
-        if '.jpg' or '.bmp' in filename: 
+        if ('.jpg' in filename.lower()) or ('.bmp' in filename.lower()): # if an image file is being attached 
           with open(filename,'rb') as f:
             img = MIMEImage(f.read(), name=os.path.basename(filename))
             msg.attach(img)
@@ -209,7 +209,7 @@ readConfigFile() # read all global variables from external configuration file
 
 
 if len(sys.argv) == 2:
-   if sys.argv[1] == '-v' or sys.argv[1] == '-V':
+   if '-v' in sys.argv[1].lower():
      verbose = True
      datestr = get_date()
      update_file("Program started in verbose mode at %s\n" % (datestr), logfile)
