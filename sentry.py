@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # name: sentry.py
-# version: 1.1
+# version: 1.2
 # author: Tom Morris
 # date: April 2016
 
@@ -56,6 +56,7 @@ def readConfigFile():
 
     global loopThreshold; loopThreshold = parser.getint('GeneralSetup','loopThreshold') 
     global max_second; max_second = parser.getint('GeneralSetup','max_second') 
+    global max_running_flags; max_running_flags = parser.getint('GeneralSetup','max_running_flags') 
     global use_acl; use_acl = parser.getboolean('GeneralSetup','use_acl') 
     global verbose; verbose= parser.getboolean('GeneralSetup','verbose') 
     global acl; acl = parser.get('GeneralSetup','acl') 
