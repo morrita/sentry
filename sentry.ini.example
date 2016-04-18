@@ -1,4 +1,5 @@
-# name= mailer.ini
+# mailer.ini
+# contains global variables used by sentry.py
 
 [EmailSetup]
 email_server 	:mail.ispnetwork.com
