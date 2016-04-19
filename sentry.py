@@ -57,6 +57,7 @@ def readConfigFile():
 
     global loopThreshold; loopThreshold = parser.getint('GeneralSetup','loopThreshold') 
     global max_second; max_second = parser.getint('GeneralSetup','max_second') 
+    global max_running_flag; max_running_flag = parser.getint('GeneralSetup','max_running_flag') 
     global use_acl; use_acl = parser.getboolean('GeneralSetup','use_acl') 
     global verbose; verbose= parser.getboolean('GeneralSetup','verbose') 
     global acl; acl = parser.get('GeneralSetup','acl') 
@@ -218,6 +219,34 @@ if len(sys.argv) == 2:
 if os.path.isfile(running_flag): 
     datestr = get_date()
     update_file("ERROR: Running flag %s detected at %s hence aborting\n" % (running_flag, datestr), logfile)
+
+    with open(running_flag, 'r') as f:
+        firstLine = f.readline()
+
+        firstList = firstLine.split()
+        firstNum = firstList[0]
+
+        if representsInt(firstNum):
+          firstInt = int(firstNum)
+          update_file("Running flag file %s  contains number  %s \n" % (running_flag, firstInt), logfile)
+          firstInt += 1
+
+          os.remove (running_flag)
+          update_file(str(firstInt),running_flag)
+
+          update_file("Updated running flag file %s  with number  %s \n" % (running_flag, firstInt), logfile)
+
+          if firstInt > max_running_flag:
+            datestr = get_date()
+            update_file("Threshold exceed so removing temp file %s and running flag file %s then rebooting at %s \n" % (tmpfile,running_flag, datestr), logfile)
+
+            if os.path.isfile(running_flag): 
+                os.remove(running_flag)
+
+            if os.path.isfile(tmpfile): 
+                os.remove(tmpfile)
+
+            restart()
 
 else:
 
@@ -385,6 +414,10 @@ else:
           if firstInt > loopThreshold:
             datestr = get_date()
             update_file("loopThreshold exceed so removing temp file %s and rebooting at %s \n" % (tmpfile, datestr), logfile)
+
+            if os.path.isfile(tmpfile): 
+                os.remove(tmpfile)
+
             restart()
 
       else:

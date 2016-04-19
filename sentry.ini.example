@@ -4,6 +4,7 @@
 [EmailSetup]
 email_server 	:mail.ispnetwork.com
 email_user 	:my_rpi@ispnetwork.com
+email_alert_user:alert.username@ispnetwork.com
 email_password 	:my_email_password
 emailSubject 	:response from Raspberry Pi at 
 internet_gw 	:192.168.1.254
@@ -27,8 +28,9 @@ test_width	:100
 test_height	:75
 
 [GeneralSetup]
-use_acl 	:1
-verbose         :0
-loopThreshold 	:60
-max_second	:55
+use_acl 		:1
+verbose         	:0
+loopThreshold 		:60
+max_running_flag	:3
+max_second		:55
 acl		:fred_bloggs@ispnetwork.com,thelm_flintstone@ispnetwork.com
