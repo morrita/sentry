@@ -1,2 +1,3 @@
 *.ini
 update_git.sh
+sentry.py.bak

@@ -221,7 +221,6 @@ if os.path.isfile(running_flag):
 else:
 
     open(running_flag, 'a').close()  # create running flag file
-    update_file("1",running_flag) # update with initial seq number 
 
     if checkNetworks():  # networks checked out fine
 
