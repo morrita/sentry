@@ -32,6 +32,7 @@ def readConfigFile():
 
     global email_server; email_server = parser.get('EmailSetup', 'email_server')
     global email_user; email_user = parser.get('EmailSetup', 'email_user')
+    global email_alert_user; email_alert_user = parser.get('EmailSetup', 'email_alert_user')
     global email_password; email_password = parser.get('EmailSetup', 'email_password')
     global emailSubject; emailSubject = parser.get('EmailSetup', 'emailSubject')
 
@@ -340,7 +341,7 @@ else:
                   # Save image and Exit before full image scan complete
                   if changedPixels > sensitivity:
                       filename = saveImage (photo_width, photo_height)
-                      sendEmail ('tom_morris@btinternet.com',filename,'Here is the captured image:\n')
+                      sendEmail (email_alert_user,filename,'Here is the captured image:\n')
                       os.remove (filename)
                       datestr = get_date()
                       update_file("Alert! Motion was detected at %s \n" % (datestr), logfile)
