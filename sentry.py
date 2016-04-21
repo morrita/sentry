@@ -370,7 +370,7 @@ else:
                   # Save image and Exit before full image scan complete
                   if changedPixels > sensitivity:
                       filename = saveImage (photo_width, photo_height)
-                      sendEmail (email_alert_user,filename,'Here is the captured image:\n')
+                      sendEmail (email_alert_user,filename,'Motion detected!Here is the captured image:\n')
                       os.remove (filename)
                       datestr = get_date()
                       update_file("Alert! Motion was detected at %s \n" % (datestr), logfile)
