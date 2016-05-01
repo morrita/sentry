@@ -44,6 +44,7 @@ def readConfigFile():
     global logfile; logfile = parser.get('PathSetup', 'logfile')
     global tmpdir; tmpdir = parser.get('PathSetup', 'tmpdir')
     global tmpfile; tmpfile = parser.get('PathSetup', 'tmpfile')
+    global stopfile; stopfile = parser.get('PathSetup', 'stopfile')
     global filepath; filepath = parser.get('PathSetup', 'filepath')
     global filenamePrefix; filenamePrefix = parser.get('PathSetup', 'filenamePrefix')
 
@@ -314,6 +315,22 @@ else:
 
                  shutdown()
 
+               elif 'sentry:stop' in varSubject.lower(): # request to stop monitoring 
+                 datestr = get_date()
+                 update_file("A request to stop monitoring was made by %s at %s \n" % (senderAddress, datestr), logfile)
+                 sendEmail (senderAddress,'',"Your request to stop monitoring for motion is being actioned...\n")
+
+                 if (not os.path.isfile(stopfile)):
+                   open(stopfile, 'a').close()  # create running flag file
+
+               elif 'sentry:resume' in varSubject.lower(): # request to resume monitoring 
+                 datestr = get_date()
+                 update_file("A request to resume monitoring was made by %s at %s \n" % (senderAddress, datestr), logfile)
+                 sendEmail (senderAddress,'',"Your request to resume monitoring for motion is being actioned...\n")
+
+                 if os.path.isfile(stopfile):
+                   os.remove(stopfile)
+
                elif 'sentry:restart' in varSubject.lower(): # shutdown requested
                  datestr = get_date()
                  update_file("A reboot was requested by %s at %s \n" % (senderAddress, datestr), logfile)
@@ -342,7 +359,7 @@ else:
 
         m.logout()
 
-      else:
+      elif (not os.path.isfile(stopfile)): # if monitoring has not bee instructed to stop
           
           # Get first image
           image1, buffer1 = captureTestImage()
