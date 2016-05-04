@@ -1,7 +1,6 @@
 #!/usr/bin/python
 # name: sentry.py
 # version: 1.2
-# author: Tom Morris
 # date: April 2016
 
 import smtplib
