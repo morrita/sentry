@@ -1,0 +1,1 @@
+Sentry is a Python project that is designed to be called by Crontab every minute. Firstly the code checks for any requests received via email, and goes ahead and executes the request. Next the system checks for motion via the Raspberry Pi camera until the minute is up. If motion is detected then  an image is captured and emailed to a configured email address.
