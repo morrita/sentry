@@ -64,6 +64,14 @@ def readConfigFile():
     global acl; acl = parser.get('GeneralSetup','acl') 
     acl = acl.split(',')
 
+def tidy_flagfiles():	# remove all files in tidy_list if they exist
+    datestr = get_date()
+    for f in tidy_list:
+        if os.path.isfile(f):
+            update_file("INFO: removing file %s at %s \n" % (f,datestr), logfile)
+            os.remove(f)
+        else:
+            update_file("INFO: will not remove file %s as it does not exist at %s \n" % (f,datestr), logfile)
 
 # Capture a small test image (for motion detection)
 def captureTestImage():
@@ -125,10 +133,8 @@ def checkNetworks():  # return true if all network interfaces ping OK
 
     return (check)
 
-
 def networkAvailable(IPaddress): # return true if IP address responds OK 
     result = False
-
 
 def accessPermitted(senderAddress):  # return true if senderAddress in ACL list
     if use_acl:			# check access control list for SenderAddress 
@@ -197,7 +203,6 @@ def getEmailInfo(response_part):
 
     return (senderAddress, varSubject)
 
-
 def saveImage(photo_width, photo_height):
     datestr = get_date()
     filename = filepath + "/" + filenamePrefix + "_" + str(photo_width) + "x" + str(photo_height) + "_" + datestr + ".jpg"
@@ -207,9 +212,8 @@ def saveImage(photo_width, photo_height):
 
     return (filename)
 
-
 readConfigFile() # read all global variables from external configuration file
-
+tidy_list = [running_flag,tmpfile]
 
 if len(sys.argv) == 2:
    if '-v' in sys.argv[1].lower():
@@ -240,13 +244,7 @@ if os.path.isfile(running_flag):
           if firstInt > max_running_flag:
             datestr = get_date()
             update_file("Threshold exceed so removing temp file %s and running flag file %s then rebooting at %s \n" % (tmpfile,running_flag, datestr), logfile)
-
-            if os.path.isfile(running_flag): 
-                os.remove(running_flag)
-
-            if os.path.isfile(tmpfile): 
-                os.remove(tmpfile)
-
+            tidy_flagfiles()
             restart()
 
 else:
@@ -266,15 +264,7 @@ else:
       except:
         datestr = get_date()
         update_file("ERROR: failed to create IMAP_SSL object for email server %s at %s \n" % (email_server,datestr), logfile)
-        
-        if os.path.isfile(tmpfile): 
-                update_file("INFO: removing file %s at %s \n" % (tmpfile,datestr), logfile)
-                os.remove(tmpfile)
-
-        if os.path.isfile(runnning_flag): 
-                update_file("INFO: removing file %s at %s \n" % (running_flag,datestr), logfile)
-                os.remove(running_flag)
-
+        tidy_flagfiles()
         sys.exit(1)
 
       try:
@@ -282,15 +272,7 @@ else:
       except imaplib.IMAP4.error:
         datestr = get_date()
         update_file("ERROR: IMAP login to %s as %s failed at %s \n" % (email_server,email_user,datestr), logfile)
-
-        if os.path.isfile(tmpfile): 
-          update_file("INFO: removing file %s at %s \n" % (tmpfile,datestr), logfile)
-          os.remove(tmpfile)
-
-        if os.path.isfile(runnning_flag): 
-          update_file("INFO: removing file %s at %s \n" % (running_flag,datestr), logfile)
-          os.remove(running_flag)
-
+        tidy_flagfiles()
         sys.exit(1)
 
       m.select('inbox')
@@ -327,10 +309,7 @@ else:
                  datestr = get_date()
                  update_file("A shutdown was requested by %s at %s \n" % (senderAddress, datestr), logfile)
                  sendEmail (senderAddress,'',"Your request to shut down the system is being actioned...\n")
-
-                 if os.path.isfile(running_flag):
-                   os.remove(running_flag)
-
+                 tidy_flagfiles()
                  shutdown()
 
                elif 'sentry:stop' in varSubject.lower(): # request to stop monitoring 
@@ -353,10 +332,7 @@ else:
                  datestr = get_date()
                  update_file("A reboot was requested by %s at %s \n" % (senderAddress, datestr), logfile)
                  sendEmail (senderAddress,'',"Your request to reboot the system is being actioned...\n")
-
-                 if os.path.isfile(running_flag): 
-                   os.remove(running_flag)
-
+                 tidy_flagfiles()
                  restart()
 
                elif 'sentry:hires' in varSubject.lower(): # hi resolution photo requested
@@ -449,10 +425,7 @@ else:
           if firstInt > loopThreshold:
             datestr = get_date()
             update_file("loopThreshold exceed so removing temp file %s and rebooting at %s \n" % (tmpfile, datestr), logfile)
-
-            if os.path.isfile(tmpfile): 
-                os.remove(tmpfile)
-
+            tidy_flagfiles()
             restart()
 
       else:
