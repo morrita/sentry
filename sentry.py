@@ -265,6 +265,15 @@ else:
       except:
         datestr = get_date()
         update_file("ERROR: failed to create IMAP_SSL object for email server %s at %s \n" % (email_server,datestr), logfile)
+        
+        if os.path.isfile(tmpfile): 
+                update_file("INFO: removing file %s at %s \n" % (tmpfile,datestr), logfile)
+                os.remove(tmpfile)
+
+        if os.path.isfile(runnning_flag): 
+                update_file("INFO: removing file %s at %s \n" % (running_flag,datestr), logfile)
+                os.remove(running_flag)
+
         sys.exit(1)
 
       try:
@@ -272,6 +281,15 @@ else:
       except imaplib.IMAP4.error:
         datestr = get_date()
         update_file("ERROR: IMAP login to %s as %s failed at %s \n" % (email_server,email_user,datestr), logfile)
+
+        if os.path.isfile(tmpfile): 
+          update_file("INFO: removing file %s at %s \n" % (tmpfile,datestr), logfile)
+          os.remove(tmpfile)
+
+        if os.path.isfile(runnning_flag): 
+          update_file("INFO: removing file %s at %s \n" % (running_flag,datestr), logfile)
+          os.remove(running_flag)
+
         sys.exit(1)
 
       m.select('inbox')
