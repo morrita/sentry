@@ -21,7 +21,7 @@ import os
 from ConfigParser import SafeConfigParser
 
 cfg_file = '/usr/local/bin/sentry/sentry.ini'
-running_flag = '/tmp/sentry_running.tmp'
+#running_flag = '/tmp/sentry_running.tmp'
 testcount = 0
  
 def readConfigFile():
@@ -43,6 +43,7 @@ def readConfigFile():
     global logfile; logfile = parser.get('PathSetup', 'logfile')
     global tmpdir; tmpdir = parser.get('PathSetup', 'tmpdir')
     global tmpfile; tmpfile = parser.get('PathSetup', 'tmpfile')
+    global running_flag; running_flag = parser.get('PathSetup', 'running_flag')
     global stopfile; stopfile = parser.get('PathSetup', 'stopfile')
     global filepath; filepath = parser.get('PathSetup', 'filepath')
     global filenamePrefix; filenamePrefix = parser.get('PathSetup', 'filenamePrefix')

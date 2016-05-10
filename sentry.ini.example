@@ -15,6 +15,7 @@ logdir 		:/var/log/sentry
 logfile 	:%(logdir)s/sentry.log
 tmpdir 		:/tmp
 tmpfile 	:%(tmpdir)s/sentry_counter.txt
+running_flag    :%(tmpdir)s/sentry_running.txt
 stopfile 	:%(tmpdir)s/sentry_stop_monitoring.txt
 filepath 	:/tmp
 filenamePrefix  :image 
