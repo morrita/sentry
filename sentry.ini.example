@@ -35,4 +35,5 @@ verbose         	:0
 loopThreshold 		:60
 max_running_flag	:3
 max_second		:55
+testcount		:0
 acl		:fred_bloggs@ispnetwork.com,thelm_flintstone@ispnetwork.com

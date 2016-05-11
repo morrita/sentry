@@ -21,8 +21,6 @@ import os
 from ConfigParser import SafeConfigParser
 
 cfg_file = '/usr/local/bin/sentry/sentry.ini'
-#running_flag = '/tmp/sentry_running.tmp'
-testcount = 0
  
 def readConfigFile():
     # read variables from config file
@@ -59,6 +57,7 @@ def readConfigFile():
     global loopThreshold; loopThreshold = parser.getint('GeneralSetup','loopThreshold') 
     global max_second; max_second = parser.getint('GeneralSetup','max_second') 
     global max_running_flag; max_running_flag = parser.getint('GeneralSetup','max_running_flag') 
+    global testcount; testcount= parser.getint('GeneralSetup','testcount') 
     global use_acl; use_acl = parser.getboolean('GeneralSetup','use_acl') 
     global verbose; verbose= parser.getboolean('GeneralSetup','verbose') 
     global acl; acl = parser.get('GeneralSetup','acl') 
