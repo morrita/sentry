@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # name: sentry.py
-# version: 1.2
-# date: April 2016
+# version: 2.0 
+# date: May 2016
 
 import smtplib
 from email.mime.multipart import MIMEMultipart
@@ -297,6 +297,19 @@ else:
                  datestr = get_date()
                  update_file("A copy of the logfile was requested by %s at %s \n" % (senderAddress, datestr), logfile)
                  sendEmail (senderAddress,logfile,"Here is a copy of the logfile contents:\n")
+
+               elif 'sentry:help' in varSubject.lower(): # helprequested
+                 datestr = get_date()
+                 helpMessage = "Help contents - include the following in email subject heading: \n\
+sentry:logs \t\t sends the logfile contents\n\
+sentry:resetlogs \t resets the logfile\n\
+sentry:shutdown \t shuts down the system\n\
+sentry:stop \t\t keeps polling for emails but stops motion detection\n\
+sentry:resume \t\t will resume motion detection\n\
+sentry:hires \t\t will capture a high resolution image and send back\n\
+sentry:restert \t\t will shut down the system for keeps\n\
+sentry:help \t\t will email this message back!"
+                 sendEmail (senderAddress,'',helpMessage)
 
                elif 'sentry:resetlogs' in varSubject.lower(): # logfile requested
                  os.remove (logfile)
