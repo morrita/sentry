@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # name: sentry.py
-# version: 2.0 
+# version: 2.1 
 # date: May 2016
 
 import smtplib
