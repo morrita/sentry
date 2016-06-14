@@ -126,7 +126,7 @@ def checkNetworks():  # return true if all network interfaces ping OK
     for i in nw_checks:
       if not checkIP(i):
         datestr = get_date()
-        update_file("Failed to contact network address %s at %s \n" % (i, datestr), logfile)
+        update_file("WARN: Failed to contact network address %s at %s \n" % (i, datestr), logfile)
         check = False
         break
 
@@ -179,10 +179,10 @@ def sendEmail(emailTo,filename='',first_line=''):
        smtp = smtplib.SMTP(email_server)
        smtp.login(email_user, email_password)
        smtp.sendmail(email_user, emailTo, msg.as_string())
-       update_file("email response sent to " + emailTo + " at: " + datestr + "\n", logfile)
+       update_file("INFO: email response sent to " + emailTo + " at: " + datestr + "\n", logfile)
 
     except smtplib.SMTPException:
-       update_file("Error:unable to send email response to " + emailTo + " at: " + datestr + "\n", logfile)
+       update_file("ERROR: unable to send email response to " + emailTo + " at: " + datestr + "\n", logfile)
 
 def getEmailInfo(response_part):
     msg = email.message_from_string(response_part[1])
@@ -207,7 +207,7 @@ def saveImage(photo_width, photo_height):
     filename = filepath + "/" + filenamePrefix + "_" + str(photo_width) + "x" + str(photo_height) + "_" + datestr + ".jpg"
     subprocess.call("raspistill -mm matrix -w %d -h %d -e jpg -q %d -o %s" % (photo_width, photo_height, pct_quality, filename), shell=True)
 
-    update_file("Captured %s at %s \n" % (filename,datestr), logfile)
+    update_file("INFO: Captured %s at %s \n" % (filename,datestr), logfile)
 
     return (filename)
 
@@ -218,7 +218,7 @@ if len(sys.argv) == 2:
    if '-v' in sys.argv[1].lower():
      verbose = True
      datestr = get_date()
-     update_file("Program started in verbose mode at %s\n" % (datestr), logfile)
+     update_file("INFO: Program started in verbose mode at %s\n" % (datestr), logfile)
 
 if os.path.isfile(running_flag): 
     datestr = get_date()
@@ -232,17 +232,17 @@ if os.path.isfile(running_flag):
 
         if representsInt(firstNum):
           firstInt = int(firstNum)
-          update_file("Running flag file %s  contains number  %s \n" % (running_flag, firstInt), logfile)
+          update_file("INFO: Running flag file %s  contains number  %s \n" % (running_flag, firstInt), logfile)
           firstInt += 1
 
           os.remove (running_flag)
           update_file(str(firstInt),running_flag)
 
-          update_file("Updated running flag file %s  with number  %s \n" % (running_flag, firstInt), logfile)
+          update_file("INFO: Updated running flag file %s  with number  %s \n" % (running_flag, firstInt), logfile)
 
           if firstInt > max_running_flag:
             datestr = get_date()
-            update_file("Threshold exceed so removing temp file %s and running flag file %s then rebooting at %s \n" % (tmpfile,running_flag, datestr), logfile)
+            update_file("ERROR:Threshold exceed so removing temp file %s and running flag file %s then rebooting at %s \n" % (tmpfile,running_flag, datestr), logfile)
             tidy_flagfiles()
             restart()
 
@@ -255,7 +255,7 @@ else:
 
       if os.path.isfile (tmpfile):
         datestr = get_date()
-        update_file("Networks checked out fine so removing temp file %s at %s \n" % (tmpfile, datestr), logfile)
+        update_file("INFO: Networks checked out fine so removing temp file %s at %s \n" % (tmpfile, datestr), logfile)
         os.remove (tmpfile)
 
       try: 
@@ -295,7 +295,7 @@ else:
              if accessPermitted(senderAddress):
                if 'sentry:logs' in varSubject.lower(): # logfile requested
                  datestr = get_date()
-                 update_file("A copy of the logfile was requested by %s at %s \n" % (senderAddress, datestr), logfile)
+                 update_file("INFO: A copy of the logfile was requested by %s at %s \n" % (senderAddress, datestr), logfile)
                  sendEmail (senderAddress,logfile,"Here is a copy of the logfile contents:\n")
 
                elif 'sentry:help' in varSubject.lower(): # helprequested
@@ -361,7 +361,7 @@ sentry:help \t\t will email this message back!"
 
              else:
                datestr = get_date()
-               update_file("Email address %s not recognised at %s \n" % (senderAddress,datestr), logfile)
+               update_file("WARN: Email address %s not recognised at %s \n" % (senderAddress,datestr), logfile)
 
         m.logout()
 
@@ -396,8 +396,8 @@ sentry:help \t\t will email this message back!"
                       sendEmail (email_alert_user,filename,'Motion detected!Here is the captured image:\n')
                       os.remove (filename)
                       datestr = get_date()
-                      update_file("Alert! Motion was detected at %s \n" % (datestr), logfile)
-                      update_file("changedPixels = %s , sensitivity = %s , threshold = %s \n" % (str(changedPixels), str(sensitivity), str(threshold)), logfile)
+                      update_file("INFO: Alert! Motion was detected at %s \n" % (datestr), logfile)
+                      update_file("INFO: changedPixels = %s , sensitivity = %s , threshold = %s \n" % (str(changedPixels), str(sensitivity), str(threshold)), logfile)
                       changedPixels = 0
                       break
 
