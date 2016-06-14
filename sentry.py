@@ -314,19 +314,19 @@ sentry:help \t\t will email this message back!"
                elif 'sentry:resetlogs' in varSubject.lower(): # logfile requested
                  os.remove (logfile)
                  datestr = get_date()
-                 update_file("A logfile reset was requested by %s at %s \n" % (senderAddress, datestr), logfile)
+                 update_file("INFO: A logfile reset was requested by %s at %s \n" % (senderAddress, datestr), logfile)
                  sendEmail (senderAddress,logfile,"The logfile has been reset, here is the new logfile contents:\n")
 
                elif 'sentry:shutdown' in varSubject.lower(): # shutdown requested
                  datestr = get_date()
-                 update_file("A shutdown was requested by %s at %s \n" % (senderAddress, datestr), logfile)
+                 update_file("INFO: A shutdown was requested by %s at %s \n" % (senderAddress, datestr), logfile)
                  sendEmail (senderAddress,'',"Your request to shut down the system is being actioned...\n")
                  tidy_flagfiles()
                  shutdown()
 
                elif 'sentry:stop' in varSubject.lower(): # request to stop monitoring 
                  datestr = get_date()
-                 update_file("A request to stop monitoring was made by %s at %s \n" % (senderAddress, datestr), logfile)
+                 update_file("INFO: A request to stop monitoring was made by %s at %s \n" % (senderAddress, datestr), logfile)
                  sendEmail (senderAddress,'',"Your request to stop monitoring for motion is being actioned...\n")
 
                  if (not os.path.isfile(stopfile)):
@@ -334,7 +334,7 @@ sentry:help \t\t will email this message back!"
 
                elif 'sentry:resume' in varSubject.lower(): # request to resume monitoring 
                  datestr = get_date()
-                 update_file("A request to resume monitoring was made by %s at %s \n" % (senderAddress, datestr), logfile)
+                 update_file("INFO: A request to resume monitoring was made by %s at %s \n" % (senderAddress, datestr), logfile)
                  sendEmail (senderAddress,'',"Your request to resume monitoring for motion is being actioned...\n")
 
                  if os.path.isfile(stopfile):
@@ -342,7 +342,7 @@ sentry:help \t\t will email this message back!"
 
                elif 'sentry:restart' in varSubject.lower(): # shutdown requested
                  datestr = get_date()
-                 update_file("A reboot was requested by %s at %s \n" % (senderAddress, datestr), logfile)
+                 update_file("INFO: A reboot was requested by %s at %s \n" % (senderAddress, datestr), logfile)
                  sendEmail (senderAddress,'',"Your request to reboot the system is being actioned...\n")
                  tidy_flagfiles()
                  restart()
@@ -408,7 +408,7 @@ sentry:help \t\t will email this message back!"
 
           if verbose:
             datestr = get_date()
-            update_file("%s test images were captured suring this run at %s \n" % (str(testcount),datestr), logfile)
+            update_file("INFO: %s test images were captured suring this run at %s \n" % (str(testcount),datestr), logfile)
           
 
     else:                        # network failure detected
@@ -416,7 +416,7 @@ sentry:help \t\t will email this message back!"
       update_file("ERROR: program did not run as a network error was detected at %s \n" % (datestr), logfile)
 
       if os.path.isfile (tmpfile):
-        update_file("Temp file %s  was detected at %s \n" % (tmpfile, datestr), logfile)
+        update_file("INFO: Temp file %s  was detected at %s \n" % (tmpfile, datestr), logfile)
 
         with open(tmpfile, 'r') as f:
           firstLine = f.readline()
@@ -426,22 +426,22 @@ sentry:help \t\t will email this message back!"
 
         if representsInt(firstNum):
           firstInt = int(firstNum)
-          update_file("Temp file %s  contains number  %s \n" % (tmpfile, firstInt), logfile)
+          update_file("INFO: Temp file %s  contains number  %s \n" % (tmpfile, firstInt), logfile)
           firstInt += 1
 
           os.remove (tmpfile)
           update_file(str(firstInt),tmpfile)
 
-          update_file("Updated temp file %s  with number  %s \n" % (tmpfile, firstInt), logfile)
+          update_file("INFO: Updated temp file %s  with number  %s \n" % (tmpfile, firstInt), logfile)
 
           if firstInt > loopThreshold:
             datestr = get_date()
-            update_file("loopThreshold exceed so removing temp file %s and rebooting at %s \n" % (tmpfile, datestr), logfile)
+            update_file("ERROR: loopThreshold exceed so removing temp file %s and rebooting at %s \n" % (tmpfile, datestr), logfile)
             tidy_flagfiles()
             restart()
 
       else:
-        update_file("Creating temp file %s at %s \n" % (tmpfile, datestr), logfile)
+        update_file("INFO: Creating temp file %s at %s \n" % (tmpfile, datestr), logfile)
         update_file("1",tmpfile)
 
     os.remove (running_flag)
