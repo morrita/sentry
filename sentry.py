@@ -175,6 +175,7 @@ def sendEmail(emailTo,filename='',first_line=''):
 
 
     # Send the email via the SMTP server
+    datestr = get_date()
     try:
        smtp = smtplib.SMTP(email_server)
        smtp.login(email_user, email_password)
@@ -416,6 +417,7 @@ sentry:help \t\t will email this message back!"
       update_file("ERROR: program did not run as a network error was detected at %s \n" % (datestr), logfile)
 
       if os.path.isfile (tmpfile):
+        datestr = get_date()
         update_file("INFO: Temp file %s  was detected at %s \n" % (tmpfile, datestr), logfile)
 
         with open(tmpfile, 'r') as f:
@@ -441,7 +443,21 @@ sentry:help \t\t will email this message back!"
             restart()
 
       else:
+        datestr = get_date()
         update_file("INFO: Creating temp file %s at %s \n" % (tmpfile, datestr), logfile)
         update_file("1",tmpfile)
+
+    with open(running_flag, 'r') as f:
+      firstLine = f.readline()
+
+    firstList = firstLine.split()
+    firstNum = firstList[0]
+
+    if representsInt(firstNum):
+      firstInt = int(firstNum)
+
+    if firstInt > 1:
+        datestr = get_date()
+        update_file("INFO: now deleting running flag file %s at %s \n" % (running_flag, datestr), logfile)
 
     os.remove (running_flag)
