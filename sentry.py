@@ -3,6 +3,8 @@
 # version: 2.1 
 # date: May 2016
 
+from sentry_lib import get_num_file
+
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.image import MIMEImage
@@ -102,13 +104,6 @@ def shutdown():
 def update_file(message,filename): # append filename with message
         with open(filename,'a') as f:
           f.write(message)
-
-def representsInt(s):
-    try:
-        int(s)
-        return True
-    except ValueError:
-        return False
 
 def checkIP(IPaddress): #return true if IP address pings OK
 
@@ -225,27 +220,19 @@ if os.path.isfile(running_flag):
     datestr = get_date()
     update_file("ERROR: Running flag %s detected at %s hence aborting\n" % (running_flag, datestr), logfile)
 
-    with open(running_flag, 'r') as f:
-        firstLine = f.readline()
+    rfc = get_num_file(running_flag)
+    update_file("INFO: Running flag file %s  contains number  %s \n" % (running_flag, rfc), logfile)
+    rfc += 1
 
-        firstList = firstLine.split()
-        firstNum = firstList[0]
+    os.remove (running_flag)
+    update_file(str(rfc),running_flag)
+    update_file("INFO: Updated running flag file %s  with number  %s \n" % (running_flag, rfc), logfile)
 
-        if representsInt(firstNum):
-          firstInt = int(firstNum)
-          update_file("INFO: Running flag file %s  contains number  %s \n" % (running_flag, firstInt), logfile)
-          firstInt += 1
-
-          os.remove (running_flag)
-          update_file(str(firstInt),running_flag)
-
-          update_file("INFO: Updated running flag file %s  with number  %s \n" % (running_flag, firstInt), logfile)
-
-          if firstInt > max_running_flag:
-            datestr = get_date()
-            update_file("ERROR:Threshold exceed so removing temp file %s and running flag file %s then rebooting at %s \n" % (tmpfile,running_flag, datestr), logfile)
-            tidy_flagfiles()
-            restart()
+    if rfc > max_running_flag:
+      datestr = get_date()
+      update_file("ERROR:Threshold exceed so removing temp file %s and running flag file %s then rebooting at %s \n" % (tmpfile,running_flag, datestr), logfile)
+      tidy_flagfiles()
+      restart()
 
 else:
 
@@ -420,43 +407,27 @@ sentry:help \t\t will email this message back!"
         datestr = get_date()
         update_file("INFO: Temp file %s  was detected at %s \n" % (tmpfile, datestr), logfile)
 
-        with open(tmpfile, 'r') as f:
-          firstLine = f.readline()
-
-        firstList = firstLine.split()
-        firstNum = firstList[0]
-
-        if representsInt(firstNum):
-          firstInt = int(firstNum)
-          update_file("INFO: Temp file %s  contains number  %s \n" % (tmpfile, firstInt), logfile)
-          firstInt += 1
-
-          os.remove (tmpfile)
-          update_file(str(firstInt),tmpfile)
-
-          update_file("INFO: Updated temp file %s  with number  %s \n" % (tmpfile, firstInt), logfile)
-
-          if firstInt > loopThreshold:
-            datestr = get_date()
-            update_file("ERROR: loopThreshold exceed so removing temp file %s and rebooting at %s \n" % (tmpfile, datestr), logfile)
-            tidy_flagfiles()
-            restart()
+        tfc = get_num_file(tmpfile)
+        update_file("INFO: Temp file %s  contains number  %s \n" % (tmpfile, tfc), logfile)
+        tfc += 1
+        
+        os.remove (tmpfile)
+        update_file(str(tfc),tmpfile)
+        update_file("INFO: Updated temp file %s  with number  %s \n" % (tmpfile, tfc), logfile)
+        
+        if tfc > loopThreshold:
+          datestr = get_date()
+          update_file("ERROR: loopThreshold exceed so removing temp file %s and rebooting at %s \n" % (tmpfile, datestr), logfile)
+          tidy_flagfiles()
+          restart()
 
       else:
         datestr = get_date()
         update_file("INFO: Creating temp file %s at %s \n" % (tmpfile, datestr), logfile)
         update_file("1",tmpfile)
 
-    with open(running_flag, 'r') as f:
-      firstLine = f.readline()
-
-    firstList = firstLine.split()
-    firstNum = firstList[0]
-
-    if representsInt(firstNum):
-      firstInt = int(firstNum)
-
-    if firstInt > 1:
+    rfc = get_num_file(running_flag) 
+    if rfc > 1:
         datestr = get_date()
         update_file("INFO: now deleting running flag file %s at %s \n" % (running_flag, datestr), logfile)
 
