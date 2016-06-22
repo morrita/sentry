@@ -315,18 +315,24 @@ sentry:help \t\t will email this message back!"
                elif 'sentry:stop' in varSubject.lower(): # request to stop monitoring 
                  datestr = get_date()
                  update_file("INFO: A request to stop monitoring was made by %s at %s \n" % (senderAddress, datestr), logfile)
-                 sendEmail (senderAddress,'',"Your request to stop monitoring for motion is being actioned...\n")
 
                  if (not os.path.isfile(stopfile)):
                    open(stopfile, 'a').close()  # create running flag file
+                   sendEmail (senderAddress,'',"Your request to stop monitoring for motion has actioned...\n")
+
+                 else:
+                   sendEmail (senderAddress,'',"Since monitoring for motion was already stopped your request was not actioned...\n")
 
                elif 'sentry:resume' in varSubject.lower(): # request to resume monitoring 
                  datestr = get_date()
                  update_file("INFO: A request to resume monitoring was made by %s at %s \n" % (senderAddress, datestr), logfile)
-                 sendEmail (senderAddress,'',"Your request to resume monitoring for motion is being actioned...\n")
 
                  if os.path.isfile(stopfile):
                    os.remove(stopfile)
+                   sendEmail (senderAddress,'',"Your request to resume monitoring for motion has been actioned...\n")
+
+                 else:
+                   sendEmail (senderAddress,'',"Since monitoring for motion has not been stopped your request has not been actioned...\n")
 
                elif 'sentry:restart' in varSubject.lower(): # shutdown requested
                  datestr = get_date()
