@@ -19,6 +19,7 @@ running_flag    :%(tmpdir)s/sentry_running.txt
 stopfile 	:%(tmpdir)s/sentry_stop_monitoring.txt
 filepath 	:/tmp
 filenamePrefix  :image 
+tidy_list       :%(running_flag)s,%(tmpfile)s
 
 [CameraSetup]
 photo_width 	:640

@@ -4,6 +4,8 @@
 # date: May 2016
 
 from sentry_lib import get_num_file
+from sentry_lib import system_shutdown 
+from sentry_lib import update_file 
 
 import smtplib
 from email.mime.multipart import MIMEMultipart
@@ -47,6 +49,8 @@ def readConfigFile():
     global stopfile; stopfile = parser.get('PathSetup', 'stopfile')
     global filepath; filepath = parser.get('PathSetup', 'filepath')
     global filenamePrefix; filenamePrefix = parser.get('PathSetup', 'filenamePrefix')
+    global tidy_list; tidy_list = parser.get('PathSetup','tidy_list')
+    tidy_list = tidy_list.split(',')
 
     global photo_width; photo_width = parser.getint('CameraSetup','photo_width') 
     global photo_height; photo_height = parser.getint('CameraSetup','photo_height') 
@@ -87,23 +91,6 @@ def captureTestImage():
 
     return im, buffer
 
-def restart():
-    command = "/usr/bin/sudo /sbin/shutdown -r now"
-    import subprocess
-    process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
-    output = process.communicate()[0]
-    update_file (output, logfile)
-
-def shutdown():
-    command = "/usr/bin/sudo /sbin/shutdown -h now"
-    import subprocess
-    process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
-    output = process.communicate()[0]
-    update_file (output, logfile)
-
-def update_file(message,filename): # append filename with message
-        with open(filename,'a') as f:
-          f.write(message)
 
 def checkIP(IPaddress): #return true if IP address pings OK
 
@@ -208,7 +195,6 @@ def saveImage(photo_width, photo_height):
     return (filename)
 
 readConfigFile() # read all global variables from external configuration file
-tidy_list = [running_flag,tmpfile]
 
 if len(sys.argv) == 2:
    if '-v' in sys.argv[1].lower():
@@ -310,7 +296,7 @@ sentry:help \t\t will email this message back!"
                  update_file("INFO: A shutdown was requested by %s at %s \n" % (senderAddress, datestr), logfile)
                  sendEmail (senderAddress,'',"Your request to shut down the system is being actioned...\n")
                  tidy_flagfiles()
-                 shutdown()
+                 system_shutdown(logfile)
 
                elif 'sentry:stop' in varSubject.lower(): # request to stop monitoring 
                  datestr = get_date()
@@ -339,7 +325,7 @@ sentry:help \t\t will email this message back!"
                  update_file("INFO: A reboot was requested by %s at %s \n" % (senderAddress, datestr), logfile)
                  sendEmail (senderAddress,'',"Your request to reboot the system is being actioned...\n")
                  tidy_flagfiles()
-                 restart()
+                 system_shutdown(restart = True, logfile)
 
                elif 'sentry:hires' in varSubject.lower(): # hi resolution photo requested
                  photo_width = 2592 

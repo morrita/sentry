@@ -1,7 +1,12 @@
 #!/usr/bin/python
 # name: sentry_lib.py
-# version: 0.1 
-# date: June 2016
+# version: 0.2 
+# date: July 2016
+
+
+def update_file(message,filename): # append filename with message
+    with open(filename,'a') as f:
+        f.write(message)
 
 def representsInt(s):
     try:
@@ -11,7 +16,6 @@ def representsInt(s):
         return False
 
 def get_num_file(filename):
-
     with open(filename, 'r') as f:
       firstLine = f.readline()
 
@@ -26,3 +30,15 @@ def get_num_file(filename):
 
     return firstInt 
 
+def system_shutdown(restart = False,logfile):
+    
+    if restart:
+        command = "/usr/bin/sudo /sbin/shutdown -h now"
+
+    else:
+        command = "/usr/bin/sudo /sbin/shutdown -r now"
+
+    import subprocess
+    process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
+    output = process.communicate()[0]
+    update_file (output, logfile)
