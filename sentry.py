@@ -218,7 +218,7 @@ if os.path.isfile(running_flag):
       datestr = get_date()
       update_file("ERROR:Threshold exceed so removing temp file %s and running flag file %s then rebooting at %s \n" % (tmpfile,running_flag, datestr), logfile)
       tidy_flagfiles()
-      restart()
+      system_shutdown(logfile,restart=True)
 
 else:
 
@@ -296,7 +296,7 @@ sentry:help \t\t will email this message back!"
                  update_file("INFO: A shutdown was requested by %s at %s \n" % (senderAddress, datestr), logfile)
                  sendEmail (senderAddress,'',"Your request to shut down the system is being actioned...\n")
                  tidy_flagfiles()
-                 system_shutdown(logfile)
+                 system_shutdown(logfile,restart=False)
 
                elif 'sentry:stop' in varSubject.lower(): # request to stop monitoring 
                  datestr = get_date()
@@ -325,7 +325,7 @@ sentry:help \t\t will email this message back!"
                  update_file("INFO: A reboot was requested by %s at %s \n" % (senderAddress, datestr), logfile)
                  sendEmail (senderAddress,'',"Your request to reboot the system is being actioned...\n")
                  tidy_flagfiles()
-                 system_shutdown(restart = True, logfile)
+                 system_shutdown(logfile,restart=True)
 
                elif 'sentry:hires' in varSubject.lower(): # hi resolution photo requested
                  photo_width = 2592 
@@ -411,7 +411,7 @@ sentry:help \t\t will email this message back!"
           datestr = get_date()
           update_file("ERROR: loopThreshold exceed so removing temp file %s and rebooting at %s \n" % (tmpfile, datestr), logfile)
           tidy_flagfiles()
-          restart()
+          system_shutdown(logfile,restart=True)
 
       else:
         datestr = get_date()
@@ -423,4 +423,5 @@ sentry:help \t\t will email this message back!"
         datestr = get_date()
         update_file("INFO: now deleting running flag file %s at %s \n" % (running_flag, datestr), logfile)
 
-    os.remove (running_flag)
+    if os.path.isfile(running_flag):
+        os.remove (running_flag)
