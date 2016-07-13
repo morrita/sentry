@@ -42,7 +42,9 @@ def system_shutdown(logfile,restart):
     else:
         command = "/usr/bin/sudo /sbin/shutdown -h now"
 
+    message = "Now issuing command " + command + "\n"
+    update_file (message, logfile)
+
     import subprocess
     process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
     output = process.communicate()[0]
-    update_file (output, logfile)

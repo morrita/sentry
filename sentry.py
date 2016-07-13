@@ -114,9 +114,6 @@ def checkNetworks():  # return true if all network interfaces ping OK
 
     return (check)
 
-def networkAvailable(IPaddress): # return true if IP address responds OK 
-    result = False
-
 def accessPermitted(senderAddress):  # return true if senderAddress in ACL list
     if use_acl:			# check access control list for SenderAddress 
        check = False
@@ -229,7 +226,8 @@ else:
 
       if os.path.isfile (tmpfile):
         datestr = get_date()
-        update_file("INFO: Networks checked out fine so removing temp file %s at %s \n" % (tmpfile, datestr), logfile)
+        tfc = get_num_file(tmpfile) 
+        update_file("INFO: Networks checked out fine so removing temp file %s at %s, temp file count = %d \n" % (tmpfile, datestr,tfc), logfile)
         os.remove (tmpfile)
 
       try: 
@@ -421,7 +419,7 @@ sentry:help \t\t will email this message back!"
     rfc = get_num_file(running_flag) 
     if rfc > 1:
         datestr = get_date()
-        update_file("INFO: now deleting running flag file %s at %s \n" % (running_flag, datestr), logfile)
+        update_file("INFO: now deleting running flag file %s at %s, running flag count = %d \n" % (running_flag, datestr,rfc), logfile)
 
     if os.path.isfile(running_flag):
         os.remove (running_flag)

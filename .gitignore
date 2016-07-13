@@ -1,4 +1,4 @@
 *.ini
 update_git.sh
 sentry.bak
-sentry_lib.pyc
+*.pyc
