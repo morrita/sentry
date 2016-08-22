@@ -352,6 +352,7 @@ sentry:help \t\t will email this message back!"
           while (current_second < max_second):
  
               current_second = datetime.now().second
+              n1 = datetime.now()
 
               # Get comparison image
               image2, buffer2 = captureTestImage()
@@ -384,9 +385,18 @@ sentry:help \t\t will email this message back!"
               image1 = image2
               buffer1 = buffer2
 
-          if verbose:
+              n2 = datetime.now()
+
+              if verbose: # log the time it took to execute this loop if threshold breached
+                loop_time = (n2 - n1).total_seconds()
+                if loop_time > 0.9:
+                  datestr = get_date()
+                  update_file("INFO: time taken to execute loop =  %s seconds at %s\n" % (str(loop_time),datestr), logfile) 
+              
+
+          if verbose: # log the number of test images catured for this run
             datestr = get_date()
-            update_file("INFO: %s test images were captured suring this run at %s \n" % (str(testcount),datestr), logfile)
+            update_file("INFO: %s test images were captured during this run at %s \n" % (str(testcount),datestr), logfile)
           
 
     else:                        # network failure detected
