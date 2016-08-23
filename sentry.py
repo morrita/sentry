@@ -387,11 +387,10 @@ sentry:help \t\t will email this message back!"
 
               n2 = datetime.now()
 
-              if verbose: # log the time it took to execute this loop if threshold breached
-                loop_time = (n2 - n1).total_seconds()
-                if loop_time > 0.9:
-                  datestr = get_date()
-                  update_file("INFO: time taken to execute loop =  %s seconds at %s\n" % (str(loop_time),datestr), logfile) 
+              loop_time = (n2 - n1).total_seconds()
+              if loop_time > 0.9:
+                datestr = get_date()
+                update_file("INFO: time taken to execute loop =  %s seconds at %s\n" % (str(loop_time),datestr), logfile) 
               
 
           if verbose: # log the number of test images catured for this run

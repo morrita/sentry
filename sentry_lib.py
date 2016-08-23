@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # name: sentry_lib.py
-# version: 0.2 
+# version: 0.3 
 # date: July 2016
 
 
