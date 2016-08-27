@@ -48,3 +48,42 @@ def system_shutdown(logfile,restart):
     import subprocess
     process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
     output = process.communicate()[0]
+
+
+def dropbox_upload(verbose,logfile,appname,token,uploadfile):
+    
+  if verbose:
+    message = "INFO: using appname = " + appname + " to upload to Dropbox\n"
+    update_file (message, logfile)
+
+  import dropbox
+  import os.path
+  from dropbox.exceptions import ApiError, AuthError
+  from dropbox.files import WriteMode
+
+  dbx = dropbox.Dropbox(token)
+
+  try:
+    dbx.users_get_current_account()
+    if os.path.isfile(uploadfile):
+      with open(uploadfile, 'rb') as f:
+
+        filename = '/' + os.path.basename(uploadfile)
+
+        try:
+            dbx.files_upload(f, filename, dropbox.files.WriteMode.overwrite)
+            if verbose:
+               message = "INFO: successfully uploaded file " + uploadfile + " as " + filename + " to Dropbox within application " + appname + " \n"
+               update_file (message, logfile)
+
+        except ApiError as err:
+          message = "ERROR: an error ocurred attemping to upload file to dropbox\n"
+          update_file (message, logfile)
+
+    else:
+      message = "ERROR: filename " + uploadfile + " does not exist hence not uploading to Dropbox\n"
+      update_file (message, logfile)
+
+  except AuthError as err:
+    message = "ERROR: Invalid Dropbox access token\n"
+    update_file (message, logfile)

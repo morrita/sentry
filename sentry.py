@@ -6,6 +6,7 @@
 from sentry_lib import get_num_file
 from sentry_lib import system_shutdown 
 from sentry_lib import update_file 
+from sentry_lib import dropbox_upload 
 
 import smtplib
 from email.mime.multipart import MIMEMultipart
@@ -68,6 +69,10 @@ def readConfigFile():
     global verbose; verbose= parser.getboolean('GeneralSetup','verbose') 
     global acl; acl = parser.get('GeneralSetup','acl') 
     acl = acl.split(',')
+
+    global dropbox_token; dropbox_token= parser.get('DropboxSetup','dropbox_token') 
+    global dropbox_app; dropbox_app= parser.get('DropboxSetup','dropbox_app') 
+    global dropbox_enabled; dropbox_enabled= parser.getboolean('DropboxSetup','dropbox_enabled') 
 
 def tidy_flagfiles():	# remove all files in tidy_list if they exist
     datestr = get_date()
@@ -193,11 +198,9 @@ def saveImage(photo_width, photo_height):
 
 readConfigFile() # read all global variables from external configuration file
 
-if len(sys.argv) == 2:
-   if '-v' in sys.argv[1].lower():
-     verbose = True
-     datestr = get_date()
-     update_file("INFO: Program started in verbose mode at %s\n" % (datestr), logfile)
+if verbose: # log the number of test images catured for this run
+    datestr = get_date()
+    update_file("INFO: program started in verbose mode at %s \n" % (datestr), logfile)
 
 if os.path.isfile(running_flag): 
     datestr = get_date()
@@ -345,6 +348,10 @@ sentry:help \t\t will email this message back!"
 
       elif (not os.path.isfile(stopfile)): # if monitoring has not bee instructed to stop
           
+          if verbose: # log the number of test images catured for this run
+              datestr = get_date()
+              update_file("INFO: program now starting to motion detection routine at %s \n" % (datestr), logfile)
+
           # Get first image
           image1, buffer1 = captureTestImage()
           current_second = datetime.now().second
@@ -386,6 +393,7 @@ sentry:help \t\t will email this message back!"
               buffer1 = buffer2
 
               n2 = datetime.now()
+              #dropbox_upload(logfile, dropbox_app, dropbox_token)
 
               loop_time = (n2 - n1).total_seconds()
               if loop_time > 0.9:
